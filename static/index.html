@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Traffic Control Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f0f2f5; color: #333; margin: 0; padding: 20px; }
+        h1, h2 { color: #1a237e; text-align: center; }
+        .dashboard-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
+        .card { background-color: white; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 20px; min-width: 250px; text-align: center; }
+        .card h3 { margin-top: 0; color: #3f51b5; }
+        .card .value { font-size: 2em; font-weight: bold; color: #e91e63; }
+        #chart-container { width: 100%; max-width: 800px; margin-top: 20px; background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+
+    <h1>AI Traffic Control - Live Dashboard</h1>
+
+    <div class="dashboard-container">
+        <div class="card">
+            <h3>Episode</h3>
+            <p id="episode" class="value">--</p>
+        </div>
+        <div class="card">
+            <h3>Time Step</h3>
+            <p id="time_step" class="value">--</p>
+        </div>
+        <div class="card">
+            <h3>Current Reward</h3>
+            <p id="reward" class="value">--</p>
+        </div>
+        <div class="card">
+            <h3>Avg. Score (100 eps)</h3>
+            <p id="avg_score" class="value">--</p>
+        </div>
+        <div class="card">
+            <h3>Traffic Light Phase</h3>
+            <p id="phase" class="value">--</p>
+        </div>
+    </div>
+
+    <div id="chart-container">
+        <h2>Queue Lengths on Incoming Lanes</h2>
+        <canvas id="queueChart"></canvas>
+    </div>
+
+    <script>
+        const laneLabels = ["N->C 1", "N->C 2", "S->C 1", "S->C 2", "E->C 1", "E->C 2", "W->C 1", "W->C 2"];
+        const ctx = document.getElementById('queueChart').getContext('2d');
+        const queueChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: laneLabels,
+                datasets: [{
+                    label: '# of Halting Vehicles',
+                    data: [0, 0, 0, 0, 0, 0, 0, 0],
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Number of Vehicles' }
+                    }
+                },
+                animation: {
+                    duration: 200 // Faster animation
+                }
+            }
+        });
+
+        async function fetchData() {
+            try {
+                const response = await fetch('/data');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+
+                // Update cards
+                document.getElementById('episode').textContent = data.episode || '--';
+                document.getElementById('time_step').textContent = data.time_step || '--';
+                document.getElementById('reward').textContent = data.reward ? data.reward.toFixed(2) : '--';
+                document.getElementById('avg_score').textContent = data.average_score ? data.average_score.toFixed(2) : '--';
+
+                // Update phase display
+                const phase_map = {0: 'N-S Green', 2: 'E-W Green'};
+                const phase_text = phase_map[data.current_phase] || 'Yellow';
+                document.getElementById('phase').textContent = phase_text;
+
+                // Update chart
+                if (data.state) {
+                    queueChart.data.datasets[0].data = data.state;
+                    queueChart.update();
+                }
+
+            } catch (error) {
+                console.error("Could not fetch data:", error);
+            }
+        }
+
+        // Fetch data every 2 seconds
+        setInterval(fetchData, 2000);
+        fetchData(); // Initial fetch
+    </script>
+
+</body>
+</html>
