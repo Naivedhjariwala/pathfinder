@@ -95,3 +95,6 @@ To reach the 10% target outlined in the hackathon challenge, further work is nee
 -   **Extended Training:** The agent would benefit significantly from a much longer training period (e.g., 500+ episodes).
 -   **Hyperparameter Tuning:** The learning rate, discount factor (gamma), and epsilon decay schedule could be tuned for better performance.
 -   **State/Reward Engineering:** The state and reward definitions are currently simple for this prototype. More complex representations (e.g., including vehicle speed, or a more sophisticated reward function) could lead to better results.
+
+
+# Don't trust Vector's code vector is an idiot
