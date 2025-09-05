@@ -231,6 +231,9 @@ def train(n_episodes=10, max_t=3600, eps_start=1.0, eps_end=0.01, eps_decay=0.99
     eps = eps_start                    # initialize epsilon
     agent = Agent(state_size=STATE_SIZE, action_size=ACTION_SIZE, seed=0)
 
+    with data_lock:
+        simulation_data['scores_history'] = []
+
     # Start the web server in a background thread
     web_thread = threading.Thread(target=start_web_server, daemon=True)
     web_thread.start()
@@ -280,6 +283,9 @@ def train(n_episodes=10, max_t=3600, eps_start=1.0, eps_end=0.01, eps_decay=0.99
         scores.append(score)              # save most recent score
         eps = max(eps_end, eps_decay*eps) # decrease epsilon
 
+        with data_lock:
+            simulation_data['scores_history'].append(np.mean(scores_window))
+
         print(f'\rEpisode {i_episode}\tAverage Score: {np.mean(scores_window):.2f}')
         if i_episode % 10 == 0:
             print(f'\rEpisode {i_episode}\tAverage Score: {np.mean(scores_window):.2f}')
@@ -294,3 +300,10 @@ if __name__ == "__main__":
     # For a real project, this would be much larger.
     scores = train(n_episodes=10)
     print("Training complete.")
+    print("Dashboard is still running. Press Ctrl+C to exit.")
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print("Exiting...")
+        sys.exit(0)

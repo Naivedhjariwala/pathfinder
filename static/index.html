@@ -12,7 +12,7 @@
         .card { background-color: white; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 20px; min-width: 250px; text-align: center; }
         .card h3 { margin-top: 0; color: #3f51b5; }
         .card .value { font-size: 2em; font-weight: bold; color: #e91e63; }
-        #chart-container { width: 100%; max-width: 800px; margin-top: 20px; background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        #chart-container, #history-chart-container { width: 100%; max-width: 800px; margin: 20px auto; background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
     </style>
 </head>
 <body>
@@ -47,6 +47,11 @@
         <canvas id="queueChart"></canvas>
     </div>
 
+    <div id="history-chart-container">
+        <h2>Training Progress (Average Score per Episode)</h2>
+        <canvas id="historyChart"></canvas>
+    </div>
+
     <script>
         const laneLabels = ["N->C 1", "N->C 2", "S->C 1", "S->C 2", "E->C 1", "E->C 2", "W->C 1", "W->C 2"];
         const ctx = document.getElementById('queueChart').getContext('2d');
@@ -75,6 +80,35 @@
             }
         });
 
+        const historyCtx = document.getElementById('historyChart').getContext('2d');
+        const historyChart = new Chart(historyCtx, {
+            type: 'line',
+            data: {
+                labels: [], // Episode numbers
+                datasets: [{
+                    label: 'Average Score',
+                    data: [], // a list of average scores
+                    borderColor: 'rgba(233, 30, 99, 1)',
+                    backgroundColor: 'rgba(233, 30, 99, 0.2)',
+                    fill: true,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        title: { display: true, text: 'Average Score' }
+                    },
+                    x: {
+                        title: { display: true, text: 'Episode' }
+                    }
+                },
+                animation: {
+                    duration: 200
+                }
+            }
+        });
+
         async function fetchData() {
             try {
                 const response = await fetch('/data');
@@ -94,10 +128,17 @@
                 const phase_text = phase_map[data.current_phase] || 'Yellow';
                 document.getElementById('phase').textContent = phase_text;
 
-                // Update chart
+                // Update queue chart
                 if (data.state) {
                     queueChart.data.datasets[0].data = data.state;
                     queueChart.update();
+                }
+
+                // Update history chart
+                if (data.scores_history) {
+                    historyChart.data.labels = Array.from({length: data.scores_history.length}, (_, i) => i + 1);
+                    historyChart.data.datasets[0].data = data.scores_history;
+                    historyChart.update();
                 }
 
             } catch (error) {
