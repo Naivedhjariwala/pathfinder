@@ -1,0 +1,36 @@
+<routes>
+    <vType id="car" accel="2.6" decel="4.5" sigma="0.5" length="5" maxSpeed="70"/>
+
+    <route id="N_S" edges="N_to_C C_to_S" />
+    <route id="N_E" edges="N_to_C C_to_E" />
+    <route id="N_W" edges="N_to_C C_to_W" />
+
+    <route id="S_N" edges="S_to_C C_to_N" />
+    <route id="S_E" edges="S_to_C C_to_E" />
+    <route id="S_W" edges="S_to_C C_to_W" />
+
+    <route id="E_N" edges="E_to_C C_to_N" />
+    <route id="E_S" edges="E_to_C C_to_S" />
+    <route id="E_W" edges="E_to_C C_to_W" />
+
+    <route id="W_N" edges="W_to_C C_to_N" />
+    <route id="W_S" edges="W_to_C C_to_S" />
+    <route id="W_E" edges="W_to_C C_to_E" />
+
+    <flow id="flow_NS" type="car" route="N_S" begin="0" end="3600" period="10" />
+    <flow id="flow_NE" type="car" route="N_E" begin="0" end="3600" period="15" />
+    <flow id="flow_NW" type="car" route="N_W" begin="0" end="3600" period="15" />
+
+    <flow id="flow_SN" type="car" route="S_N" begin="0" end="3600" period="10" />
+    <flow id="flow_SE" type="car" route="S_E" begin="0" end="3600" period="15" />
+    <flow id="flow_SW" type="car" route="S_W" begin="0" end="3600" period="15" />
+
+    <flow id="flow_EN" type="car" route="E_N" begin="0" end="3600" period="12" />
+    <flow id="flow_ES" type="car" route="E_S" begin="0" end="3600" period="12" />
+    <flow id="flow_EW" type="car" route="E_W" begin="0" end="3600" period="12" />
+
+    <flow id="flow_WN" type="car" route="W_N" begin="0" end="3600" period="12" />
+    <flow id="flow_WS" type="car" route="W_S" begin="0" end="3600" period="12" />
+    <flow id="flow_WE" type="car" route="W_E" begin="0" end="3600" period="12" />
+
+</routes>
