@@ -2,6 +2,15 @@ import xml.etree.ElementTree as ET
 import numpy as np
 
 def get_average_travel_time(file_path):
+    """
+    Parses a SUMO tripinfo XML file and returns the average travel time.
+
+    Args:
+        file_path (str): The path to the tripinfo.xml file.
+
+    Returns:
+        float: The average travel time of all vehicles, or 0 if the file is not found.
+    """
     try:
         tree = ET.parse(file_path)
         root = tree.getroot()

@@ -78,4 +78,4 @@ PyTorch/ML Models
 
 *.pth
 checkpoint.pth
-*.xml
+tripinfo.xml
