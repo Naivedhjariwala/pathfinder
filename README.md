@@ -97,4 +97,4 @@ To reach the 10% target outlined in the hackathon challenge, further work is nee
 -   **State/Reward Engineering:** The state and reward definitions are currently simple for this prototype. More complex representations (e.g., including vehicle speed, or a more sophisticated reward function) could lead to better results.
 
 
-# Don't trust Vectors code vector is an idiot
+# Don't trust Vector's code vector is an idiot
